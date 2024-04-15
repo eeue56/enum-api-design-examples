@@ -62,22 +62,52 @@ function indent(body: string): string {
 }
 
 export function parseSpecies(json: any): Result<Species, string> {
-  if (typeof json !== "string") {
-    return Err(`Expected one of: ${registeredSpecies.join(" | ")}
+  // Handle strings for backwards compatibility
+  if (typeof json === "string") {
+    if (isRegisteredSpecies(json)) {
+      return Ok(KnownSpecies(json));
+    }
+    return Ok(CustomSpecies(json));
+  }
+
+  if (typeof json !== "object") {
+    return Err(`Expected an object with kind KnownSpecies | CustomSpecies
 But got: ${typeof json}`);
   }
 
-  if (!isRegisteredSpecies(json)) {
-    return Ok({
-      kind: "CustomSpecies",
-      value: json,
-    });
+  if (json === null) {
+    return Err(`Expected object but got null`);
   }
 
-  return Ok({
-    kind: "KnownSpecies",
-    value: json,
-  });
+  if (
+    !json.kind ||
+    !(json.kind === "KnownSpecies" || json.kind === "CustomSpecies")
+  ) {
+    return Err(`Expected object to have \`.kind\` with value KnownSpecies | CustomSpecies
+But got ${json.kind}.`);
+  }
+
+  if (!json.value) {
+    return Err(`Expected object to have \`.value\` with value ${registeredSpecies.join(
+      " | "
+    )} | string
+But got ${json.value}.`);
+  }
+
+  const kind: "KnownSpecies" | "CustomSpecies" = json.kind;
+  const value = json.value;
+
+  if (kind === "KnownSpecies") {
+    if (isRegisteredSpecies(value)) {
+      return Ok(KnownSpecies(value));
+    }
+    return Err(`Expected object to have \`.value\` with value ${registeredSpecies.join(
+      " | "
+    )}
+But got ${json.value}.`);
+  }
+
+  return Ok(CustomSpecies(value));
 }
 
 export function parseAnimal(json: any): Result<Animal, string> {
