@@ -31,6 +31,25 @@ Keeping the explicitly known species will help our users understand our API, but
 
 How do we solve that in a reasonable way? To find out, we're going to branch from this commit and demostrate some example options.
 
+## PRs
+
+To get an overview of the choices, check out these PRs in order, and read the commits or the pull request body, along with the code, to see the impact each decision takes.
+
+### Representing species as a string without restrictions
+
+e.g `type Species = string`
+
+- [Server code](https://github.com/eeue56/enum-api-design-examples/pull/1)
+- [Client code to ignore unknown species](https://github.com/eeue56/enum-api-design-examples/pull/2)
+- [Also set species to string on the client](https://github.com/eeue56/enum-api-design-examples/pull/3)
+
+### Representing species with a union of two disinct objects
+
+e.g `type Species = { kind: Known, value: string } | { kind: Custom | value: string }`
+
+- [Server code](https://github.com/eeue56/enum-api-design-examples/pull/4)
+- [Match server code on the client](https://github.com/eeue56/enum-api-design-examples/pull/5)
+
 ## Usage
 
 To run the server and see how data is parsed and handled, do the following:
