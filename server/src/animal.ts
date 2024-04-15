@@ -9,9 +9,13 @@ function isKnownSpecies(species: any): species is KnownSpecies {
   return knownSpecies.includes(species);
 }
 
+export type CustomSpecies = { kind: "CustomSpecies"; value: string };
+
+export type Species = KnownSpecies | CustomSpecies;
+
 export type Animal = {
   kind: "Animal";
-  species: KnownSpecies;
+  species: Species;
 };
 
 export function Animal(species: KnownSpecies): Animal {
