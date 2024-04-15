@@ -1,14 +1,14 @@
-import { Animal, KnownSpecies, knownSpecies } from "./animal";
+import { Animal, knownSpecies } from "./animal";
 
 export function sumAnimalsOfDifferentTypes(
   animals: Animal[]
-): Record<KnownSpecies, number> {
-  const animalMap: Record<KnownSpecies, number> = {
-    Cat: 0,
-    Dog: 0,
-  };
+): Record<string, number> {
+  const animalMap: Record<string, number> = {};
 
   for (const animal of animals) {
+    if (!(animal.species in animalMap)) {
+      animalMap[animal.species] = 0;
+    }
     animalMap[animal.species]++;
   }
 
@@ -28,12 +28,16 @@ export function onlyGetOthers(animals: Animal[]): Animal[] {
 }
 
 export function animalScore(animal: Animal): number {
+  // the developer no longer gets type hints for species and must manually catch all cases
   switch (animal.species) {
     case "Cat": {
       return -1;
     }
     case "Dog": {
       return 1;
+    }
+    default: {
+      return 0;
     }
   }
 }
