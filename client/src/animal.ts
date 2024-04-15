@@ -93,6 +93,10 @@ export function parseAnimals(json: any): Result<Animal[], string> {
         break;
       }
       case "Err": {
+        // Skip any animals to do with parsing species
+        if (animal.message.includes("Error parsing `.species`")) {
+          break;
+        }
         errors.push(`Error at animal ${i}:\n${indent(animal.message)}`);
         break;
       }
