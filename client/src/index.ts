@@ -1,10 +1,15 @@
-import { Animal, KnownSpecies, knownSpecies, parseAnimals } from "./animal";
+import {
+  Animal,
+  KnownSpecies,
+  parseAnimals,
+  registeredSpecies,
+} from "./animal";
 import { animalsScore, sumAnimalsOfDifferentTypes } from "./logic";
 
 const baseUrl = "http://localhost:3000";
 
-async function createValidAnimalOnServer(speices: KnownSpecies) {
-  const animal = Animal(speices);
+async function createValidAnimalOnServer(species: string) {
+  const animal = Animal(species);
   await fetch(`${baseUrl}/animal`, {
     headers: {
       "Content-Type": "application/json",
@@ -34,7 +39,7 @@ async function main() {
     // Fill server with 5 random animals
     for (let i = 0; i < 5; i++) {
       await createValidAnimalOnServer(
-        knownSpecies[Math.floor(Math.random() * knownSpecies.length)]
+        registeredSpecies[Math.floor(Math.random() * registeredSpecies.length)]
       );
     }
   }
@@ -95,7 +100,7 @@ async function main() {
 
   {
     console.log("Try to send an animal with an unknown species...");
-    const animal = { kind: "Animal", species: "Robot" };
+    const animal = Animal("Robot");
     const response = await fetch(`${baseUrl}/animal`, {
       headers: {
         "Content-Type": "application/json",
@@ -112,8 +117,8 @@ async function main() {
 
   {
     console.log("Try to get all animals with a known species...");
-    const spieces: KnownSpecies = knownSpecies[0];
-    const response = await fetch(`${baseUrl}/list/${spieces}`);
+    const species: string = KnownSpecies(registeredSpecies[0]).value;
+    const response = await fetch(`${baseUrl}/list/${species}`);
     console.log(response.status);
     if (response.status === 200) {
       const animals = parseAnimals(await response.json());
@@ -138,8 +143,8 @@ async function main() {
 
   {
     console.log("Try to get all animals with an unknown species...");
-    const spieces: string = "Robot";
-    const response = await fetch(`${baseUrl}/list/${spieces}`);
+    const species: string = "Robot";
+    const response = await fetch(`${baseUrl}/list/${species}`);
     console.log(response.status);
     if (response.status === 200) {
       const animals = parseAnimals(await response.json());

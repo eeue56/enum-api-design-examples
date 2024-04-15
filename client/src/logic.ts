@@ -1,39 +1,54 @@
-import { Animal, KnownSpecies, knownSpecies } from "./animal";
+import { Animal } from "./animal";
 
 export function sumAnimalsOfDifferentTypes(
   animals: Animal[]
-): Record<KnownSpecies, number> {
-  const animalMap: Record<KnownSpecies, number> = {
-    Cat: 0,
-    Dog: 0,
-  };
+): Record<string, number> {
+  const animalMap: Record<string, number> = {};
 
   for (const animal of animals) {
-    animalMap[animal.species]++;
+    if (!(animal.species.value in animalMap)) {
+      animalMap[animal.species.value] = 0;
+    }
+    animalMap[animal.species.value]++;
   }
 
   return animalMap;
 }
 
 export function onlyGetCats(animals: Animal[]): Animal[] {
-  return animals.filter((animal) => animal.species === "Cat");
+  // Need to filter to known species to get type completion
+  return animals.filter(
+    (animal) =>
+      animal.species.kind === "KnownSpecies" && animal.species.value === "Cat"
+  );
 }
 
 export function onlyGetDogs(animals: Animal[]): Animal[] {
-  return animals.filter((animal) => animal.species === "Dog");
+  // Need to filter to known species to get type completion
+  return animals.filter(
+    (animal) =>
+      animal.species.kind === "KnownSpecies" && animal.species.value === "Dog"
+  );
 }
 
 export function onlyGetOthers(animals: Animal[]): Animal[] {
-  return animals.filter((animal) => !knownSpecies.includes(animal.species));
+  return animals.filter((animal) => animal.species.kind == "CustomSpecies");
 }
 
 export function animalScore(animal: Animal): number {
-  switch (animal.species) {
-    case "Cat": {
-      return -1;
+  switch (animal.species.kind) {
+    case "KnownSpecies": {
+      switch (animal.species.value) {
+        case "Cat": {
+          return -1;
+        }
+        case "Dog": {
+          return 1;
+        }
+      }
     }
-    case "Dog": {
-      return 1;
+    case "CustomSpecies": {
+      return 0;
     }
   }
 }
