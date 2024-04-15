@@ -1,20 +1,13 @@
 import { Err, Ok, Result } from "./result";
 
-export const knownSpecies = ["Dog", "Cat"] as const;
-
-// this is the same as "Dog" | "Cat"
-export type KnownSpecies = (typeof knownSpecies)[number];
-
-function isKnownSpecies(species: any): species is KnownSpecies {
-  return knownSpecies.includes(species);
-}
+export const knownSpecies = ["Dog", "Cat"];
 
 export type Animal = {
   kind: "Animal";
-  species: KnownSpecies;
+  species: string;
 };
 
-export function Animal(species: KnownSpecies): Animal {
+export function Animal(species: string): Animal {
   return {
     kind: "Animal",
     species,
@@ -28,15 +21,10 @@ function indent(body: string): string {
     .join("\n");
 }
 
-export function parseSpecies(json: any): Result<KnownSpecies, string> {
+export function parseSpecies(json: any): Result<string, string> {
   if (typeof json !== "string") {
-    return Err(`Expected one of: ${knownSpecies.join(" | ")}
+    return Err(`Expected one of: ${knownSpecies.join(" | ")}, or a string
 But got: ${typeof json}`);
-  }
-
-  if (!isKnownSpecies(json)) {
-    return Err(`Expected one of: ${knownSpecies.join(" | ")}
-But got: ${json}`);
   }
 
   return Ok(json);
