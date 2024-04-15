@@ -2,7 +2,7 @@ import { Animal, KnownSpecies, knownSpecies } from "./animal";
 
 export function sumAnimalsOfDifferentTypes(
   animals: Animal[]
-): Record<KnownSpecies, number> {
+): Record<string, number> {
   const animalMap: Record<KnownSpecies, number> = {
     Cat: 0,
     Dog: 0,
