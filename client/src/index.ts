@@ -1,9 +1,9 @@
-import { Animal, KnownSpecies, knownSpecies, parseAnimals } from "./animal";
+import { Animal, knownSpecies, parseAnimals } from "./animal";
 import { animalsScore, sumAnimalsOfDifferentTypes } from "./logic";
 
 const baseUrl = "http://localhost:3000";
 
-async function createValidAnimalOnServer(speices: KnownSpecies) {
+async function createValidAnimalOnServer(speices: string) {
   const animal = Animal(speices);
   await fetch(`${baseUrl}/animal`, {
     headers: {
@@ -112,7 +112,7 @@ async function main() {
 
   {
     console.log("Try to get all animals with a known species...");
-    const spieces: KnownSpecies = knownSpecies[0];
+    const spieces: string = knownSpecies[0];
     const response = await fetch(`${baseUrl}/list/${spieces}`);
     console.log(response.status);
     if (response.status === 200) {
