@@ -1,0 +1,17 @@
+{
+  "name": "enum-api-design-examples",
+  "version": "1.0.0",
+  "description": "Examples of API designs when using enums",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7",
+    "express": "^4.19.2"
+  }
+}
