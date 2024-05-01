@@ -1,5 +1,5 @@
 import express, { Response } from "express";
-import { Animal, parseAnimal, parseSpecies } from "./animal";
+import { Animal, isEqualSpecies, parseAnimal, parseSpecies } from "./animal";
 
 function sendAnimal(res: Response<any>, animal: Animal): void {
   res.send(JSON.stringify(animal));
@@ -32,7 +32,9 @@ async function main() {
         res.status(200);
         sendAnimals(
           res,
-          animals.filter((animal) => animal.species === species.value)
+          animals.filter((animal) =>
+            isEqualSpecies(animal.species, species.value)
+          )
         );
         return;
       }

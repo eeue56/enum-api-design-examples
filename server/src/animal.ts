@@ -1,20 +1,53 @@
 import { Err, Ok, Result } from "./result";
 
-export const knownSpecies = ["Dog", "Cat"] as const;
+export const registeredSpecies = ["Dog", "Cat"] as const;
 
 // this is the same as "Dog" | "Cat"
-export type KnownSpecies = (typeof knownSpecies)[number];
+export type RegisteredSpecies = (typeof registeredSpecies)[number];
 
-function isKnownSpecies(species: any): species is KnownSpecies {
-  return knownSpecies.includes(species);
+function isRegisteredSpecies(species: any): species is RegisteredSpecies {
+  return registeredSpecies.includes(species);
+}
+
+export type KnownSpecies = {
+  kind: "KnownSpecies";
+  value: RegisteredSpecies;
+};
+
+function KnownSpecies(species: RegisteredSpecies): KnownSpecies {
+  return {
+    kind: "KnownSpecies",
+    value: species,
+  };
+}
+
+export type CustomSpecies = { kind: "CustomSpecies"; value: string };
+
+function CustomSpecies(species: string): CustomSpecies {
+  return {
+    kind: "CustomSpecies",
+    value: species,
+  };
+}
+
+export type Species = KnownSpecies | CustomSpecies;
+
+export function isEqualSpecies(first: Species, second: Species): boolean {
+  if (first.kind !== second.kind) return false;
+
+  return first.value === second.value;
 }
 
 export type Animal = {
   kind: "Animal";
-  species: KnownSpecies;
+  species: Species;
 };
 
-export function Animal(species: KnownSpecies): Animal {
+export function Animal(speciesAsAString: string): Animal {
+  let species = isRegisteredSpecies(speciesAsAString)
+    ? KnownSpecies(speciesAsAString)
+    : CustomSpecies(speciesAsAString);
+
   return {
     kind: "Animal",
     species,
@@ -28,18 +61,23 @@ function indent(body: string): string {
     .join("\n");
 }
 
-export function parseSpecies(json: any): Result<KnownSpecies, string> {
+export function parseSpecies(json: any): Result<Species, string> {
   if (typeof json !== "string") {
-    return Err(`Expected one of: ${knownSpecies.join(" | ")}
+    return Err(`Expected one of: ${registeredSpecies.join(" | ")}
 But got: ${typeof json}`);
   }
 
-  if (!isKnownSpecies(json)) {
-    return Err(`Expected one of: ${knownSpecies.join(" | ")}
-But got: ${json}`);
+  if (!isRegisteredSpecies(json)) {
+    return Ok({
+      kind: "CustomSpecies",
+      value: json,
+    });
   }
 
-  return Ok(json);
+  return Ok({
+    kind: "KnownSpecies",
+    value: json,
+  });
 }
 
 export function parseAnimal(json: any): Result<Animal, string> {
